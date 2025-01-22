@@ -25,4 +25,4 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -v root@206.189.114.116 'cd /var/www/html/ && git pull origin main'  # Serverga kodni pull qilish
+          ssh -v root@206.189.114.116 'cd /var/www/html/ && git pull origin master'  # Serverga kodni pull qilish
