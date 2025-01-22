@@ -3,24 +3,26 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - master  # Main branchga push qilinganda workflow ishga tushadi
+      - master  # yoki asosiy branch nomi, masalan, master
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Workflow Ubuntu tizimida ishlaydi
+    runs-on: ubuntu-latest  # Ishlaydigan tizim (Ubuntu ishlatilmoqda)
 
     steps:
-    - name: Check out the code
-      uses: actions/checkout@v2  # GitHub repository'dan kodni olish
+      - name: Add SSH host to known_hosts
+        run: |
+          mkdir -p ~/.ssh  # ~/.ssh papkasini yaratish
+          ssh-keyscan -H 206.189.114.116 >> ~/.ssh/known_hosts  # SSH hostni known_hosts fayliga qo'shish
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3  # SSH ulanishini sozlash
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH maxfiy kalitini GitHub secrets'dan olish
+      - name: Check out the code
+        uses: actions/checkout@v2  # GitHub repozitoriyasidan kodni olish
 
-    - name: Deploy to Server
-      run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.root }}@${{ secrets.206.189.114.116 }} 'cd /var/www/html/ff && git pull origin main && composer install && php artisan migrate'
-      env:
-        HOST: ${{ secrets.206.189.114.116 }}
-        USER: ${{ secrets.root }}
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3  # SSH orqali serverga ulanish uchun
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # GitHub secrets orqali SSH kaliti
+
+      - name: Deploy to server
+        run: |
+          ssh -v root@206.189.114.116 'cd /var/www/html/ff && git pull origin main'  # Serverga kodni pull qilish
