@@ -1,0 +1,26 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master  # Main branchga push qilinganda workflow ishga tushadi
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Workflow Ubuntu tizimida ishlaydi
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v2  # GitHub repository'dan kodni olish
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3  # SSH ulanishini sozlash
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH maxfiy kalitini GitHub secrets'dan olish
+
+    - name: Deploy to Server
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.root }}@${{ secrets.206.189.114.116 }} 'cd /var/www/html/ff && git pull origin main && composer install && php artisan migrate'
+      env:
+        HOST: ${{ secrets.206.189.114.116 }}
+        USER: ${{ secrets.root }}
