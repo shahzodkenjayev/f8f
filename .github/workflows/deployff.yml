@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      - master  # yoki asosiy branch nomi, masalan, master
+      - main  # yoki asosiy branch nomi, masalan, master
 
 jobs:
   deploy:
